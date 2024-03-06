@@ -14,6 +14,7 @@ the docstring for more details.
 
 @author:  K. Urner, 4D Solutions, (M) MIT License
 
+ Mar  5, 2024: continuing to remove any fixed-precision limitations
  Nov 15, 2023: customized for use with sympy, mpmath in m4w repo (incomplete)
  Oct  8, 2021: remove gmpy2 dependency
  Sep 19, 2021: remove autoconvert to floating point when initializing Vector
@@ -41,7 +42,7 @@ the docstring for more details.
 
 """
 
-from sympy import cos, sin, acos, atan, N
+from sympy import cos, sin, acos, atan, N, Rational, Integer, Sum
 from sympy import sqrt as rt2
 from mpmath import radians, degrees
 import mpmath
@@ -52,7 +53,7 @@ import sympy as sp
 XYZ = namedtuple("xyz_vector", "x y z")
 IVM = namedtuple("ivm_vector", "a b c d")
 
-root2      = rt2(sp.Integer(2)).evalf(50)
+root2      = rt2(2)
 mpmath.dps = 50
 
 class Vector:
@@ -103,11 +104,11 @@ class Vector:
     def unit(self):
         return self.__mul__(1/self.length())
 
-    def dot(self,v1):
+    def dot(self, v1):
         """
         Return scalar dot product of this with another vector.
         """
-        return sum(map(mul , v1.xyz, self.xyz))
+        return (self.x * v1.x) + (self.y * v1.y) + (self.z * v1.z)
 
     def cross(self,v1):
         """
@@ -126,15 +127,14 @@ class Vector:
     
     def length(self):
         """Return this vector's length"""
-        return rt2(self.dot(self)).evalf(50)
+        return rt2(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
-    def angle(self,v1):
-       """
-       Return angle between self and v1, in decimal degrees
-       """
-       costheta = self.dot(v1)/(self.length() * v1.length())
-       theta = acos(costheta) * (180/sp.pi).evalf(50)
-       return theta
+    def angle(self, v1):
+        """
+        return in degrees
+        """
+        costheta = self.dot(v1)/(self.length() * v1.length())
+        return degrees(acos(costheta))
 
     def rotaxis(self,vAxis,deg):
         """
@@ -201,10 +201,10 @@ class Vector:
         """return (a, b, c, d) quadray based on current (x, y, z)"""
         x, y, z = self.xyz
         k = 2/root2
-        a = k * ((x >= 0)* ( x) + (y >= 0) * ( y) + (z >= 0) * ( z))
-        b = k * ((x <  0)* (-x) + (y <  0) * (-y) + (z >= 0) * ( z))
-        c = k * ((x <  0)* (-x) + (y >= 0) * ( y) + (z <  0) * (-z))
-        d = k * ((x >= 0)* ( x) + (y <  0) * (-y) + (z <  0) * (-z))
+        a = k * (int(bool(x >= 0)) * ( x) + int(bool(y >= 0)) * ( y) + int(bool(z >= 0)) * ( z))
+        b = k * (int(bool(x <  0)) * (-x) + int(bool(y <  0)) * (-y) + int(bool(z >= 0)) * ( z))
+        c = k * (int(bool(x <  0)) * (-x) + int(bool(y >= 0)) * ( y) + int(bool(z <  0)) * (-z))
+        d = k * (int(bool(x >= 0)) * ( x) + int(bool(y <  0)) * (-y) + int(bool(z <  0)) * (-z))
         return Qvector((a, b, c, d))
 
         
@@ -220,12 +220,14 @@ class Qvector(Vector):
 
     def norm(self, arg):
         """Normalize such that 4-tuple all non-negative members."""
-        return IVM(*tuple(map(sub, arg, [min(arg)] * 4))) 
+        minarg = min(arg)
+        return IVM(arg[0] - minarg, arg[1] - minarg, arg[2] - minarg, arg[3] - minarg) 
     
     def norm0(self):
         """Normalize such that sum of 4-tuple members = 0"""
-        q = self.coords
-        return IVM(*tuple(map(sub, q, [sum(q)/4.0] * 4))) 
+        q  = self.coords
+        av = (q[0] + q[1] + q[2] + q[3])/4
+        return IVM(q[0]-av, q[1]-av, q[2]-av, q[3]-av) 
 
     @property
     def a(self):
@@ -264,7 +266,7 @@ class Qvector(Vector):
 
     def __truediv__(self,scalar):
         """Return vector (self) * 1/scalar"""        
-        return self.__mul__(1.0/scalar)
+        return self.__mul__(1/scalar)
     
     def __add__(self,v1):
         """Add a vector to this vector, return a vector""" 
@@ -279,15 +281,12 @@ class Qvector(Vector):
         """Return a vector, the negative of this one."""
         return type(self)(tuple(map(neg, self.coords)))
                   
-    def dot(self,v1):
-        """Return the dot product of self with another vector.
-        return a scalar
-        
-        >>> s1 = a.dot(b)/(a.length() * b.length())
-        >>> degrees(acos(s1))
-        109.47122063449069
+    def length(self):
         """
-        return N(0.5, 50) * sum(map(mul, self.norm0(), v1.norm0()))
+        Uses norm0
+        """
+        t = self.norm0()
+        return sp.sqrt(Rational(1,2) * (t[0]**2 + t[1]**2 + t[2]**2 + t[3]**2))
         
     def cross(self,v1):
         """Return the cross product of self with another vector.
@@ -298,7 +297,7 @@ class Qvector(Vector):
         D = type(self)((0,0,0,1))
         a1,b1,c1,d1 = v1.coords
         a2,b2,c2,d2 = self.coords
-        k= (2.0**0.5)/4.0
+        k= root2/4
         the_sum =   (A*c1*d2 - A*d1*c2 - A*b1*d2 + A*b1*c2
                + A*b2*d1 - A*b2*c1 - B*c1*d2 + B*d1*c2 
                + b1*C*d2 - b1*D*c2 - b2*C*d1 + b2*D*c1 
@@ -319,7 +318,7 @@ class Qvector(Vector):
     @property
     def xyz(self):
         a,b,c,d     =  self.coords
-        k           =  0.5/root2
+        k           =  1/(2 * root2)
         xyz         = (k * (a - b - c + d),
                        k * (a - b + c - d),
                        k * (a + b - c - d))
