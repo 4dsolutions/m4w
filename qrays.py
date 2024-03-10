@@ -2,6 +2,11 @@
 """
 Created on Sat Jun  4 09:07:22 2016
 
+For more background on Quadrays in the M4W context,
+see: 
+
+https://coda.io/d/Math4Wisdom_d0SvdI3KSto/Synergetics_su5DS#_luecx
+
 Vectors and Qvectors use the same metric i.e. the 
 xyz vector and corresponding ivm vector always have 
 the same length.
@@ -13,7 +18,7 @@ and triangles for IVM units of volume and area.  See
 the docstring for more details.
 
 @author:  K. Urner, 4D Solutions, (M) MIT License
-
+ Mar 10, 2024: the m4w.qrays.py fork aims to stay sympy friendly
  Mar  5, 2024: continuing to remove any fixed-precision limitations
  Nov 15, 2023: customized for use with sympy, mpmath in m4w repo (incomplete)
  Oct  8, 2021: remove gmpy2 dependency
@@ -39,10 +44,9 @@ the docstring for more details.
  added spherical coordinate subclass
  added quadray coordinate subclass
  Mar  5, 2000: added angle function
-
 """
 
-from sympy import cos, sin, acos, atan, N, Rational, Integer, Sum
+from sympy import cos, sin, acos, atan, N, Rational, Integer, Sum, S
 from sympy import sqrt as rt2
 from mpmath import radians, degrees
 import mpmath
@@ -53,7 +57,11 @@ import sympy as sp
 XYZ = namedtuple("xyz_vector", "x y z")
 IVM = namedtuple("ivm_vector", "a b c d")
 
+zero       = Integer(0)
+one        = Integer(1)
 root2      = rt2(2)
+root3      = rt2(3)
+half       = S.Half
 mpmath.dps = 50
 
 class Vector:
@@ -286,15 +294,15 @@ class Qvector(Vector):
         Uses norm0
         """
         t = self.norm0()
-        return sp.sqrt(Rational(1,2) * (t[0]**2 + t[1]**2 + t[2]**2 + t[3]**2))
+        return sp.sqrt(half * (t[0]**2 + t[1]**2 + t[2]**2 + t[3]**2))
         
     def cross(self,v1):
         """Return the cross product of self with another vector.
         return a Qvector"""
-        A = type(self)((1,0,0,0))
-        B = type(self)((0,1,0,0))
-        C = type(self)((0,0,1,0))
-        D = type(self)((0,0,0,1))
+        A = type(self)((one,zero,zero,zero))
+        B = type(self)((zero,one,zero,zero))
+        C = type(self)((zero,zero,one,zero))
+        D = type(self)((zero,zero,zero,one))
         a1,b1,c1,d1 = v1.coords
         a2,b2,c2,d2 = self.coords
         k= root2/4
@@ -310,7 +318,7 @@ class Qvector(Vector):
         """
         area in unit triangles of edges D
         """
-        return self.cross(v1).length() * 2/(3**0.5)
+        return self.cross(v1).length() * 2/root3
 
     def angle(self, v1):
         return self.xyz.angle(v1.xyz)
@@ -356,3 +364,19 @@ def angle(a,b):
 def length(a):
     return a.length()
 
+def ivm_basis():
+    a = Qvector((one, zero, zero, zero)) 
+    b = Qvector((zero, one, zero, zero))
+    c = Qvector((zero, zero, one, zero))
+    d = Qvector((zero, zero, zero, one))
+    return a, b, c, d
+
+def test1():
+    a, b, c, d = ivm_basis() # unpacking assignment
+    print("Qvector length (symbolic ) :", a.length())
+    print("Qvector length (evalutated):", a.length().evalf(50))
+    print("Vector length  (symbolic ) :", a.xyz.length())
+    print("Vector length  (evaluated) :", a.xyz.length().evalf(50))
+    
+if __name__ == "__main__":
+    test1()

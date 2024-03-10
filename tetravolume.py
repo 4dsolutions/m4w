@@ -31,12 +31,13 @@ open-ended. A work in progress.  Mar 5, 2024.
 """
 
 import sympy as sp
+from sympy import S, Rational, Integer
 from sympy import sqrt as rt2
 from qrays import Qvector, Vector
 import sys
 
-R =sp.Rational(1,2)
-D =sp.Integer(1)
+R = Rational(1,2)
+D = Integer(1)
 
 S3    = rt2(sp.Rational(9, 8))
 root2 = rt2(2)
@@ -143,7 +144,7 @@ class Test_Tetrahedron(unittest.TestCase):
 
     def test_unit_volume(self):
         tet = Tetrahedron(D, D, D, D, D, D)
-        self.assertEqual(tet.ivm_volume(), 1, "Volume not 1")
+        self.assertEqual(tet.ivm_volume(), Integer(1), "Volume not 1")
 
     def test_e_module(self):
         e0 = D
@@ -258,13 +259,17 @@ class Test_Tetrahedron(unittest.TestCase):
         q = Qvector((2,1,1,0))
         r = Qvector((2,0,1,1))
         result = make_tet(PHI*q, (1/PHI)*p, r)
-        self.assertAlmostEqual(result[0], 1, 7)
+        # print("Phi_tet_2", result[0])      
+        # self.assertAlmostEqual(result[0], 1, 7)
+        self.assertAlmostEqual(result[0].evalf(), 1, 7)
         
     def test_phi_tet_3(self):
         T = Tetrahedron(PHI, 1/PHI, 1.0, 
                         root2, root2/PHI, root2)
         result = T.ivm_volume()
-        self.assertAlmostEqual(result, 1, 7)
+        # print("Phi_tet_3", result) 
+        # self.assertAlmostEqual(result, 1, 7)
+        self.assertAlmostEqual(result.evalf(), 1, 7)
 
     def test_koski(self):
         a = 1 
