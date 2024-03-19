@@ -15,6 +15,10 @@ POV-Ray has always been a favorite.
 
 Where to find more information about these AI experiments is in this Coda:
 https://coda.io/d/Math4Wisdom_d0SvdI3KSto/ivm-xyz_suqdu#_luR7B
+
+Warning: the code below takes minutes on one CPU and creates gigantic GIFs.
+I'm not saying you shouldn't run it, just give it time to finish, don't 
+conclude it's hung, as I did the first time I ran it.
 """
 
 import matplotlib
