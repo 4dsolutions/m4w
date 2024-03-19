@@ -13,6 +13,9 @@ graphical output has been via raytracing with povray, infrequently in Blender, o
 using VPython for realtime animation. I cut my teeth on VRML back in the day, and
 POV-Ray has always been a favorite.
 
+The AI-generated dodecahedron is a mess in this version. The others look OK.
+No icosahedron was included.
+
 Where to find more information about these AI experiments is in this Coda:
 https://coda.io/d/Math4Wisdom_d0SvdI3KSto/ivm-xyz_suqdu#_luR7B
 
