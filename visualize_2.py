@@ -1,5 +1,20 @@
 """
 Another AI endeavor
+Copied from:  https://github.com/docxology/ivm-xyz/
+
+The code below bears a family resemblance to code in my repos, including this one.
+However AI is generating code from other sources and in this example is using 
+threads, which I haven't used on my end for this kind of image file generating.
+
+The GIFs this code produces are pretty huge, like 13MB per file, each one several
+rotations of a polyhedron as depicted using matplotlib's 3d toolkit. Once again,
+this is not an approach I've taken, even though I'm familiar with matplotlib. My
+graphical output has been via raytracing with povray, infrequently in Blender, or
+using VPython for realtime animation. I cut my teeth on VRML back in the day, and
+POV-Ray has always been a favorite.
+
+Where to find more information about these AI experiments is in this Coda:
+https://coda.io/d/Math4Wisdom_d0SvdI3KSto/ivm-xyz_suqdu#_luR7B
 """
 
 import matplotlib
