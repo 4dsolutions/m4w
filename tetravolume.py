@@ -28,10 +28,43 @@ for explanation of quadrays, used for some unit tests
 A goal for this version of tetravolume.py + qrays.py
 is to keep computations symbolic, with precision 
 open-ended. A work in progress.  Mar 5, 2024.
+
+Another goal as of March-April 2024 is to flesh out
+the Tetrahedron instance with more specific info as
+to which segments are what length.
+
+Apex A goes to base B, C, D, creating edges:
+    a: AB
+    b: AC
+    c: AD
+    d: BC
+    e: CD
+    f: BD
+(alphabetized pairs)
+    
+And faces: 
+    ABC ACD ADB BCD (in terms of verts)
+or (in terms of lengths): 
+    (a, d, b), (b, e, c), (c, f, a), (d, e, f)
+    [ tuples any order, elements may cycle ]
+    
+Therefore we have three angles from each vertex:
+A: BAC CAD BAD
+B: ABC CBD ABD
+C: ACB ACD BCD
+D: ADC BDC ADB
+(middle letter is vertex angle, left and right letters alphabetized)
+
+When we get the six lengths as inputs, lets 
+assign them to edge names and compute the 
+twelve angles.
+
+Example resource:
+https://www.omnicalculator.com/math/triangle-angle
 """
 
 import sympy as sp
-from sympy import S, Rational, Integer
+from sympy import Rational, Integer, acos, deg
 from sympy import sqrt as rt2
 from qrays import Qvector, Vector
 import sys
@@ -51,6 +84,14 @@ class Tetrahedron:
     Takes six edges of tetrahedron with faces
     (a,b,d)(b,c,e)(c,a,f)(d,e,f) -- returns volume
     if ivm and xyz
+    
+        Apex A goes to base B, C, D, creating edges:
+            a: AB
+            b: AC
+            c: AD
+            d: BC
+            e: CD
+            f: DB  
     """
 
     def __init__(self, a, b, c, d, e, f):
@@ -60,10 +101,85 @@ class Tetrahedron:
         self.d, self.d2 = d, d**2
         self.e, self.e2 = e, e**2
         self.f, self.f2 = f, f**2
+   
+        # 2-letter edge labels
+        self.AB = a
+        self.AC = b
+        self.AD = c
+        self.BC = d
+        self.CD = e
+        self.DB = f
+        
+        # 3-letter face angles
+        a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
+
+        self.BAC = acos( (a2 + b2 - d2)/(2 * a * b) )
+        self.CAD = acos( (b2 + c2 - e2)/(2 * b * c) )
+        self.BAD = acos( (a2 + c2 - f2)/(2 * a * c) )
+        
+        self.ABC = acos( (a2 + d2 - b2)/(2 * a * d) )
+        self.CBD = acos( (d2 + f2 - e2)/(2 * d * f) )
+        self.ABD = acos( (a2 + f2 - c2)/(2 * a * f) )
+        
+        self.ACB = acos( (b2 + d2 - a2)/(2 * b * d) )
+        self.ACD = acos( (b2 + e2 - c2)/(2 * b * e) ) 
+        self.BCD = acos( (d2 + e2 - f2)/(2 * d * e) )
+        
+        self.ADC = acos( (c2 + e2 - b2)/(2 * c * e) ) 
+        self.BDC = acos( (e2 + f2 - d2)/(2 * e * f) ) 
+        self.ADB = acos( (c2 + f2 - a2)/(2 * c * f) )
 
     def dump(self):
         return self.a2, self.b2, self.c2
+    
+    def edges(self):
+        """
+            a: AB
+            b: AC
+            c: AD
+            d: BC
+            e: CD
+            f: BD 
+        """
+        return {
+            "AB": self.a,
+            "AC": self.b,
+            "AD": self.c,
+            "BC": self.d,
+            "DC": self.e,
+            "BD": self.f,
+            }
         
+    def angles(self):
+        """
+        Three angles from each vertex:
+        A: BAC CAD BAD
+        B: ABC CBD ABD
+        C: ACB ACD BCD
+        D: ADC BDC ADB
+        (middle letter is vertex angle, left and right letters alphabetized)
+        """
+        return {
+            "BAC": self.BAC,
+            "CAD": self.CAD,
+            "BAD": self.BAD,
+            "ABC": self.ABC,
+            "CBD": self.CBD,
+            "ABD": self.ABD,
+            "ACB": self.ACB,
+            "ACD": self.ACD,
+            "BCD": self.BCD,
+            "ADC": self.ADC,
+            "BDC": self.BDC,
+            "ADB": self.ADB
+            }
+
+    def degrees(self):
+        output = {}
+        for k,v in self.angles().items():
+            output[k] = deg(v)
+        return output
+            
     def ivm_volume(self):
         ivmvol = rt2((self._addopen() 
                     - self._addclosed() 
