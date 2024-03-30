@@ -440,11 +440,11 @@ class Test_Triangle(unittest.TestCase):
         v1 = Vector((D, 0, 0))
         v2 = Vector((0, D, 0))
         xyz_area = make_tri(v1, v2)[1]
-        self.assertAlmostEqual(xyz_area, 2)
+        self.assertTrue(sp.Eq(xyz_area, 2))
 
     def test_xyz_area5(self):
         tri = Triangle(R, R, R)
-        self.assertAlmostEqual(tri.xyz_area(), (root3)/4)
+        self.assertEqual(tri.xyz_area(), (root3)/4)
         
 def command_line():
     args = sys.argv[1:]
