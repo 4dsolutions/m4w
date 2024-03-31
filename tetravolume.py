@@ -85,6 +85,7 @@ PHI = (1 + root5)/2
 
 Smod = (PHI **-5)/2  
 Emod = (root2/8) * (PHI ** -3)
+Tmod = Rational(1,24)
 
 sfactor = Smod/Emod
 
@@ -141,6 +142,17 @@ class Tetrahedron:
     def dump(self):
         return self.a2, self.b2, self.c2
     
+    def __mul__(self, other):
+        a = self.a * other
+        b = self.b * other
+        c = self.c * other
+        d = self.d * other
+        e = self.e * other
+        f = self.f * other
+        return Tetrahedron(a,b,c,d,e,f)
+        
+    __rmul__ = __mul__
+        
     def edges(self):
         """
             a: AB
@@ -159,7 +171,7 @@ class Tetrahedron:
             "BD": self.f,
             }
         
-    def angles(self):
+    def angles(self, values=False):
         """
         Three angles from each vertex:
         A: BAC CAD BAD
@@ -168,25 +180,45 @@ class Tetrahedron:
         D: ADC BDC ADB
         (middle letter is vertex angle, left and right letters alphabetized)
         """
-        return {
-            "BAC": self.BAC,
-            "CAD": self.CAD,
-            "BAD": self.BAD,
-            "ABC": self.ABC,
-            "CBD": self.CBD,
-            "ABD": self.ABD,
-            "ACB": self.ACB,
-            "ACD": self.ACD,
-            "BCD": self.BCD,
-            "ADC": self.ADC,
-            "BDC": self.BDC,
-            "ADB": self.ADB
-            }
+        if values:
+            return {
+                "BAC": N(self.BAC),
+                "CAD": N(self.CAD),
+                "BAD": N(self.BAD),
+                "ABC": N(self.ABC),
+                "CBD": N(self.CBD),
+                "ABD": N(self.ABD),
+                "ACB": N(self.ACB),
+                "ACD": N(self.ACD),
+                "BCD": N(self.BCD),
+                "ADC": N(self.ADC),
+                "BDC": N(self.BDC),
+                "ADB": N(self.ADB)
+                }            
+        else:
+            return {
+                "BAC": self.BAC,
+                "CAD": self.CAD,
+                "BAD": self.BAD,
+                "ABC": self.ABC,
+                "CBD": self.CBD,
+                "ABD": self.ABD,
+                "ACB": self.ACB,
+                "ACD": self.ACD,
+                "BCD": self.BCD,
+                "ADC": self.ADC,
+                "BDC": self.BDC,
+                "ADB": self.ADB
+                }
 
-    def degrees(self):
+    def degrees(self, values=False):
         output = {}
-        for k,v in self.angles().items():
-            output[k] = deg(v)
+        if values:
+            for k,v in self.angles().items():
+                output[k] = N(deg(v)) 
+        else:
+            for k,v in self.angles().items():
+                output[k] = deg(v)
         return output
             
     def ivm_volume(self):
@@ -263,6 +295,49 @@ def make_tri(v0,v1):
     tri = Triangle(v0.length(), v1.length(), (v1-v0).length())
     return tri.ivm_area(), tri.xyz_area()
 
+
+class E(Tetrahedron):
+    
+    def __init__(self):
+        e0 = D/2
+        e1 = root3 * PHI**-1 /2
+        e2 = rt2((5 - root5)/2)/2
+        e3 = (3 - root5)/2/2
+        e4 = rt2(5 - 2*root5)/2
+        e5 = 1/PHI/2        
+        super().__init__(e0, e1, e2, e3, e4, e5)
+
+class T(Tetrahedron):
+    
+    def __init__(self):
+        E2T = (2**sp.Rational(5,6) * 3**sp.Rational(2,3) * PHI / 6).simplify()
+        e0 = D/2
+        e1 = root3 * PHI**-1 /2
+        e2 = rt2((5 - root5)/2)/2
+        e3 = (3 - root5)/2/2
+        e4 = rt2(5 - 2*root5)/2
+        e5 = 1/PHI/2  
+        
+        e0 *= E2T
+        e1 *= E2T
+        e2 *= E2T
+        e3 *= E2T
+        e4 *= E2T
+        e5 *= E2T
+ 
+        super().__init__(e0, e1, e2, e3, e4, e5)
+        
+class S(Tetrahedron):
+    
+    def __init__(self):
+        e0 = 1/PHI
+        e1 = sfactor/2
+        e2 = root3 * e1/2
+        e3 = (3 - root5)/2
+        e4 = e1/2
+        e5 = e4
+        super().__init__(e0, e1, e2, e3, e4, e5)    
+        
 import unittest
 class Test_Tetrahedron(unittest.TestCase):
 
@@ -271,24 +346,12 @@ class Test_Tetrahedron(unittest.TestCase):
         self.assertEqual(tet.ivm_volume(), Integer(1), "Volume not 1")
 
     def test_e_module(self):
-        e0 = D
-        e1 = root3 * PHI**-1
-        e2 = rt2((5 - root5)/2)
-        e3 = (3 - root5)/2
-        e4 = rt2(5 - 2*root5)
-        e5 = 1/PHI
-        tet = Tetrahedron(e0, e1, e2, e3, e4, e5)
-        self.assertTrue(sp.Eq(tet.ivm_volume()/8, 
-                               (root2/8) * (PHI ** -3)))
+        tet = E()
+        self.assertTrue(sp.Eq(tet.ivm_volume(), 
+                              (root2/8) * (PHI ** -3)))
         
     def test_s_module(self):
-        e0 = 1/PHI
-        e1 = sfactor/2
-        e2 = root3 * e1/2
-        e3 = (3 - root5)/2
-        e4 = e1/2
-        e5 = e4
-        tet = Tetrahedron(e0, e1, e2, e3, e4, e5)
+        tet = S()
         self.assertTrue(sp.Eq(tet.ivm_volume(), 
                                (PHI ** -5)/2))
         
@@ -422,6 +485,29 @@ class Test_Tetrahedron(unittest.TestCase):
         result = T.ivm_volume()
         self.assertTrue(sp.Eq(result, PHI ** -3))      
 
+
+class Test_Koski(unittest.TestCase):
+        
+    def test_Tetrahedron(self):
+        "Tetrahedron =   S6  +    S3 # (volume = 1)"
+        S6 = S() * PHI**2
+        S3 = S() * PHI
+        self.assertTrue(sp.Eq(S6.ivm_volume() + S3.ivm_volume(), D))
+    
+    def test_Icosahedron(self):
+        "Icosahedron =100*E3 + 20*E  # (volume = ~18.51)"
+        E3 = E() * PHI
+        E0 = E()
+        self.assertEqual(N(100*(E3.ivm_volume()) + 20*(E0.ivm_volume())), 
+                         N(20 * 1/sfactor) )       
+
+    def test_RT5(self):
+        "RhTriac_T   =  5*S6 +  5*S3 # (volume = 5)"
+        S6 = S() * PHI**2
+        S3 = S() * PHI
+        self.assertTrue(sp.Eq(5*(S6.ivm_volume()) + 5*(S3.ivm_volume()), 5))
+        
+        
 class Test_Triangle(unittest.TestCase):
     
     def test_unit_area1(self):
