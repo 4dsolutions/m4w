@@ -171,7 +171,7 @@ class Tetrahedron:
             "BD": self.f,
             }
         
-    def angles(self, values=False):
+    def angles(self, values=False, prec=15):
         """
         Three angles from each vertex:
         A: BAC CAD BAD
@@ -182,18 +182,18 @@ class Tetrahedron:
         """
         if values:
             return {
-                "BAC": N(self.BAC),
-                "CAD": N(self.CAD),
-                "BAD": N(self.BAD),
-                "ABC": N(self.ABC),
-                "CBD": N(self.CBD),
-                "ABD": N(self.ABD),
-                "ACB": N(self.ACB),
-                "ACD": N(self.ACD),
-                "BCD": N(self.BCD),
-                "ADC": N(self.ADC),
-                "BDC": N(self.BDC),
-                "ADB": N(self.ADB)
+                "BAC": N(self.BAC, prec),
+                "CAD": N(self.CAD, prec),
+                "BAD": N(self.BAD, prec),
+                "ABC": N(self.ABC, prec),
+                "CBD": N(self.CBD, prec),
+                "ABD": N(self.ABD, prec),
+                "ACB": N(self.ACB, prec),
+                "ACD": N(self.ACD, prec),
+                "BCD": N(self.BCD, prec),
+                "ADC": N(self.ADC, prec),
+                "BDC": N(self.BDC, prec),
+                "ADB": N(self.ADB, prec)
                 }            
         else:
             return {
@@ -211,25 +211,25 @@ class Tetrahedron:
                 "ADB": self.ADB
                 }
 
-    def degrees(self, values=False):
+    def degrees(self, values=False, prec=15):
         output = {}
         if values:
             for k,v in self.angles().items():
-                output[k] = N(deg(v)) 
+                output[k] = N(deg(v), prec) 
         else:
             for k,v in self.angles().items():
                 output[k] = deg(v)
         return output
             
-    def ivm_volume(self):
+    def ivm_volume(self, value=False, prec=50):
         ivmvol = rt2((self._addopen() 
                     - self._addclosed() 
                     - self._addopposite())/2)
-        return ivmvol
+        return ivmvol if not value else N(ivmvol, prec)
 
-    def xyz_volume(self):
+    def xyz_volume(self, value=False, prec=50):
         xyzvol = (1/S3) * self.ivm_volume()
-        return xyzvol
+        return xyzvol if not value else N(xyzvol, prec)
 
     def _addopen(self):
         a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
