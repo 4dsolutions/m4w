@@ -81,11 +81,12 @@ root2 = rt2(2)
 root3 = rt2(3)
 root5 = rt2(5)
 root6 = rt2(6)
+
 PHI = (1 + root5)/2
 
 Smod = (PHI **-5)/2  
 Emod = (root2/8) * (PHI ** -3)
-Tmod = Rational(1,24)
+Amod = Bmod = Tmod = Rational(1,24)
 
 sfactor = Smod/Emod
 
@@ -93,7 +94,7 @@ class Tetrahedron:
     """
     Takes six edges of tetrahedron with faces
     (a,b,d)(b,c,e)(c,a,f)(d,e,f) -- returns volume
-    if ivm and xyz
+    in ivm tvs and xyz cubic units, S3 ratio.
     
         Apex A goes to base B, C, D, creating edges:
             a: AB
