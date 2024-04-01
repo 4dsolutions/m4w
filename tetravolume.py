@@ -29,6 +29,8 @@ See:
 https://coda.io/d/Math4Wisdom_d0SvdI3KSto/ivm-xyz_suqdu#_luR7B
 for explanation of quadrays, used for some unit tests
 
+https://flic.kr/p/2pGmvWD (labeling system)
+
 A goal for this version of tetravolume.py + qrays.py
 is to keep computations symbolic, with precision 
 open-ended. A work in progress.  Mar 5, 2024.
