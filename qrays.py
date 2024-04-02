@@ -46,9 +46,8 @@ the docstring for more details.
  Mar  5, 2000: added angle function
 """
 
-from sympy import cos, sin, acos, atan, N, Rational, Integer, Sum, S
+from sympy import cos, sin, acos, atan, N, Rational, Integer, Sum, S, rad, deg
 from sympy import sqrt as rt2
-from mpmath import radians, degrees
 import mpmath
 from operator import add, sub, mul, neg
 from collections import namedtuple
@@ -142,9 +141,9 @@ class Vector:
         return in degrees
         """
         costheta = self.dot(v1)/(self.length() * v1.length())
-        return degrees(acos(costheta))
+        return deg(acos(costheta))
 
-    def rotaxis(self,vAxis,deg):
+    def rotaxis(self,vAxis,degr):
         """
         Rotate around vAxis by deg
         realign rotation axis with Z-axis, realign self accordingly,
@@ -154,29 +153,29 @@ class Vector:
         
         r,phi,theta = vAxis.spherical()
         newv  = self.rotz(-theta).roty(phi)
-        newv  = newv.rotz(-deg)
+        newv  = newv.rotz(-degr)
         newv  = newv.roty(-phi).rotz(theta)
         return type(self)(newv.xyz)        
 
-    def rotx(self, deg):
-        rad    = radians(deg)
-        newy   = cos(rad) * self.y - sin(rad) * self.z
-        newz   = sin(rad) * self.y + cos(rad) * self.z
-        newxyz = [round(p ,8) for p in (self.x , newy, newz)]
+    def rotx(self, degr):
+        rads   = rad(degr)
+        newy   = cos(rads) * self.y - sin(rads) * self.z
+        newz   = sin(rads) * self.y + cos(rads) * self.z
+        newxyz = (self.x, newy, newz)
         return type(self)(newxyz)
    
-    def roty(self, deg):
-        rad    = radians(deg)
-        newx   = cos(rad) * self.x - sin(rad) * self.z
-        newz   = sin(rad) * self.x + cos(rad) * self.z
-        newxyz = [round(p ,8) for p in (newx, self.y, newz)]
+    def roty(self, degr):
+        rads   = rad(degr)
+        newx   = cos(rads) * self.x - sin(rads) * self.z
+        newz   = sin(rads) * self.x + cos(rads) * self.z
+        newxyz = (newx, self.y, newz)
         return type(self)(newxyz)
 
-    def rotz(self, deg):
-        rad    = radians(deg)
-        newx   = cos(rad) * self.x - sin(rad) * self.y
-        newy   = sin(rad) * self.x + cos(rad) * self.y
-        newxyz = [round(p ,8) for p in (newx , newy, self.z)]
+    def rotz(self, degr):
+        rads   = rad(degr)
+        newx   = cos(rads) * self.x - sin(rads) * self.y
+        newy   = sin(rads) * self.x + cos(rads) * self.y
+        newxyz = (newx, newy, self.z)
         return type(self)(newxyz)
     
     def spherical(self):
@@ -191,7 +190,7 @@ class Vector:
             
         else:  
             
-            theta = degrees(math.atan(self.y/self.x))
+            theta = deg(atan(self.y/self.x))
             if   self.x < 0 and self.y == 0:   theta = 180
             # theta is positive so turn more than 180
             elif self.x < 0 and self.y <  0:   theta = 180 + theta
@@ -201,7 +200,7 @@ class Vector:
         if r == 0: 
             phi=0.0
         else: 
-            phi = degrees(acos(self.z/r))
+            phi = deg(acos(self.z/r))
         
         return (r, phi, theta)
 
@@ -374,7 +373,7 @@ def ivm_basis():
 def test1():
     a, b, c, d = ivm_basis() # unpacking assignment
     print("Qvector length (symbolic ) :", a.length())
-    print("Qvector length (evalutated):", a.length().evalf(50))
+    print("Qvector length (evaluated):" , a.length().evalf(50))
     print("Vector length  (symbolic ) :", a.xyz.length())
     print("Vector length  (evaluated) :", a.xyz.length().evalf(50))
     
