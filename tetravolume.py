@@ -280,7 +280,8 @@ def GdJ(a, b, c, d, e, f):
 
 def PdF(a,b,c,d,e,f):
     """
-    Pierro della Francesca
+    Piero della Francesca
+    https://www.mathpages.com/home/kmath424/kmath424.htm
     """
     
     def adapter(a, e, c, d, f, b):
@@ -301,6 +302,7 @@ def PdF(a,b,c,d,e,f):
 def CM(a, b, c, d, e, f):
     """
     Caley-Menger
+    https://en.wikipedia.org/wiki/Cayley%E2%80%93Menger_determinant
     """
     A,B,C,D,E,F = [(2*x)**2 for x in (a,b,c,d,e,f)]
     
