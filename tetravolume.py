@@ -1,7 +1,8 @@
 """
-Euler volume, modified by Gerald de Jong
-http://www.grunch.net/synergetics/quadvols.html
+tetravolume.py
 Kirby Urner (c) MIT License
+
+April  1, 2024: wire up all three volume-from-edges algorithms as options 
 
 March 30, 2024: tighten the unittests to rely more on sympy
 March 30, 2024: save edges and angles when initializing the Tetrahedron
@@ -30,6 +31,9 @@ https://coda.io/d/Math4Wisdom_d0SvdI3KSto/ivm-xyz_suqdu#_luR7B
 for explanation of quadrays, used for some unit tests
 
 https://flic.kr/p/2pGmvWD (labeling system)
+
+https://github.com/4dsolutions/School_of_Tomorrow/blob/master/VolumeTalk.ipynb
+for background on adapting volume formulas and/or using GdJ's
 
 A goal for this version of tetravolume.py + qrays.py
 is to keep computations symbolic, with precision 
@@ -70,7 +74,7 @@ https://www.omnicalculator.com/math/triangle-angle
 """
 
 import sympy as sp
-from sympy import Rational, Integer, acos, deg, N
+from sympy import Rational, Integer, Matrix, acos, deg, N
 from sympy import sqrt as rt2
 from qrays import Qvector, Vector
 import sys
@@ -78,7 +82,7 @@ import sys
 R = Rational(1,2)
 D = Integer(1)
 
-S3    = rt2(sp.Rational(9, 8))
+Syn3  = rt2(sp.Rational(9, 8))
 root2 = rt2(2)
 root3 = rt2(3)
 root5 = rt2(5)
@@ -105,6 +109,8 @@ class Tetrahedron:
             d: BC
             e: CD
             f: DB  
+            
+    https://flic.kr/p/2pGmvWD (labeling system)
     """
 
     def __init__(self, a, b, c, d, e, f):
@@ -225,45 +231,77 @@ class Tetrahedron:
         return output
             
     def ivm_volume(self, value=False, prec=50):
-        ivmvol = rt2((self._addopen() 
-                    - self._addclosed() 
-                    - self._addopposite())/2)
+        """
+        Three options to compute volume from edges...
+        GdJ: Gerald de Jong, similar to Euler's, lost his notes, works
+        PdF: Pierro della Francesca, modified by Syn3 (XYZ->IVM constant)
+        CM : Caley-Menger, modified by Syn3 (XYZ->IVM constant) 
+        """
+        
+        #ivmvol = GdJ(self.a, self.b, self.c, self.d, self.e, self.f)
+        #ivmvol = PdF(self.a, self.b, self.c, self.d, self.e, self.f)
+        ivmvol = CM(self.a, self.b, self.c, self.d, self.e, self.f)
+        
         return ivmvol if not value else N(ivmvol, prec)
 
     def xyz_volume(self, value=False, prec=50):
-        xyzvol = (1/S3) * self.ivm_volume()
+        xyzvol = (1/Syn3) * self.ivm_volume()
         return xyzvol if not value else N(xyzvol, prec)
 
-    def _addopen(self):
-        a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
-        sumval = f2*a2*b2
-        sumval +=  d2 * a2 * c2
-        sumval +=  a2 * b2 * e2
-        sumval +=  c2 * b2 * d2
-        sumval +=  e2 * c2 * a2
-        sumval +=  f2 * c2 * b2
-        sumval +=  e2 * d2 * a2
-        sumval +=  b2 * d2 * f2
-        sumval +=  b2 * e2 * f2
-        sumval +=  d2 * e2 * c2
-        sumval +=  a2 * f2 * e2
-        sumval +=  d2 * f2 * c2
-        return sumval
+def GdJ(a, b, c, d, e, f):
+    "Gerald de Jong"
+    A,B,C,D,E,F = [x**2 for x in (a, b, c, d, e, f)] # 2nd power us
 
-    def _addclosed(self):
-        a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
-        sumval =   a2 * b2 * d2
-        sumval +=  d2 * e2 * f2
-        sumval +=  b2 * c2 * e2
-        sumval +=  a2 * c2 * f2
-        return sumval
+    _open   = sum((A * B * E, A * B * F, A * C * D,  
+                   A * C * E, A * D * E, A * E * F,
+                   B * C * D, B * C * F, B * D * F, 
+                   B * E * F, C * D * E, C * D * F))
+    
+    _closed = sum((A * B * D, 
+                   A * C * F, 
+                   B * C * E, 
+                   D * E * F))
 
-    def _addopposite(self):
-        a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
-        sumval =  a2 * e2 * (a2 + e2)
-        sumval += b2 * f2 * (b2 + f2)
-        sumval += c2 * d2 * (c2 + d2)
-        return sumval
+    _oppo   = sum((A * E * (A + E),
+                   B * F * (B + F),
+                   C * D * (C + D)))
+    
+    return rt2((_open - _closed - _oppo)/2)
+
+def PdF(a,b,c,d,e,f):
+    """
+    Pierro della Francesca
+    """
+    
+    def adapter(a, e, c, d, f, b):
+        "unscramble input's to match GdJ order"
+        return a, b, c, d, e, f
+
+    A,B,C,D,E,F = [x**2 for x in 
+                   adapter(2*a,2*b,2*c,2*d,2*e,2*f)] 
+    
+    comp_chunk =  ((A * F) * (-A + B + C + D + E - F)
+                 + (B * E) * ( A - B + C + D - E + F)
+                 + (C * D) * ( A + B - C - D + E + F)
+                 - (A + F) * (B + E) * (C + D)/2
+                 - (A - F) * (B - E) * (C - D)/2 )
+    
+    return rt2(2 * comp_chunk) / 16  # Syn3 is blended in here
+
+def CM(a, b, c, d, e, f):
+    """
+    Caley-Menger
+    """
+    A,B,C,D,E,F = [(2*x)**2 for x in (a,b,c,d,e,f)]
+    
+    # Construct a 5x5 matrix per Caley-Menger
+    M = Matrix(
+        [[0, 1, 1, 1, 1],
+         [1, 0, A, B, C],
+         [1, A, 0, D, F],
+         [1, B, D, 0, E],
+         [1, C, F, E, 0]])
+    return rt2(M.det())/16  # Syn3 factored in 
 
 def make_tet(v0,v1,v2):
     """
@@ -376,9 +414,10 @@ class Test_Tetrahedron(unittest.TestCase):
         self.assertEqual(tet.xyz_volume(), D)
 
     def test_quadrant(self):
-        qA = Qvector((1,0,0,0))
-        qB = Qvector((0,1,0,0))
-        qC = Qvector((0,0,1,0))
+        one = Integer(1)
+        qA = Qvector((one,0,0,0))
+        qB = Qvector((0,one,0,0))
+        qC = Qvector((0,0,one,0))
         tet = make_tet(qA, qB, qC) 
         self.assertEqual(tet.ivm_volume(), Rational(1,4)) 
 
@@ -409,7 +448,7 @@ class Test_Tetrahedron(unittest.TestCase):
         b = Vector((0,R,0))
         c = Vector((0,0,R))
         R_cube = 6 * make_tet(a,b,c).xyz_volume()
-        self.assertEqual(D_tet.xyz_volume() * S3, R_cube)
+        self.assertEqual(D_tet.xyz_volume() * Syn3, R_cube)
 
     def test_martian(self):
         two = Integer(2)
