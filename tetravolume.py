@@ -623,7 +623,7 @@ class Test_Tetrahedron(unittest.TestCase):
         one = Integer(1)
         two = Integer(2)
         three = Integer(3)
-        a = Qvector((one,0,0,0))
+        # a = Qvector((one,0,0,0))
         b = Qvector((0,one,0,0))
         c = Qvector((0,0,one,0))
         d = Qvector((0,0,0,one))
