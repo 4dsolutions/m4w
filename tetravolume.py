@@ -36,6 +36,9 @@ https://flic.kr/p/2pGmvWD (labeling system)
 https://github.com/4dsolutions/School_of_Tomorrow/blob/master/VolumeTalk.ipynb
 for background on adapting volume formulas and/or using GdJ's
 
+https://github.com/4dsolutions/School_of_Tomorrow/blob/master/Qvolume.ipynb
+for background on computing a tet volume from 4 quadrays
+
 A goal for this version of tetravolume.py + qrays.py
 is to keep computations symbolic, with precision 
 open-ended. A work in progress.  Mar 5, 2024.
@@ -316,6 +319,18 @@ def make_tet(v0,v1,v2):
     """
     return Tetrahedron(v0.length(), v1.length(), v2.length(), 
                       (v0-v1).length(), (v1-v2).length(), (v2-v0).length())
+
+def qvolume(q0, q1, q2, q3):
+    """
+    Construct a 5x5 matrix per Tom Ace
+    """
+    M = Matrix([
+        q0.coords + (1,),
+        q1.coords + (1,),
+        q2.coords + (1,),
+        q3.coords + (1,),
+        [1,1,1,1,0]])
+    return abs(M.det())/4 # that's it!
 
 # ============[ BEAST Modules ]=================== 
 
@@ -602,8 +617,23 @@ class Test_Tetrahedron(unittest.TestCase):
         e = (root2) * PHI ** -2
         f = (root2) * PHI ** -1       
         tet = Tetrahedron(a,b,c,d,e,f)
-        self.assertTrue(sp.Eq(tet.ivm_volume(), PHI ** -3))    
+        self.assertTrue(sp.Eq(tet.ivm_volume(), PHI ** -3))   
 
+    def test_qvolume(self):        
+        one = Integer(1)
+        two = Integer(2)
+        three = Integer(3)
+        a = Qvector((one,0,0,0))
+        b = Qvector((0,one,0,0))
+        c = Qvector((0,0,one,0))
+        d = Qvector((0,0,0,one))
+        
+        # vertexes of the A module as Qvectors
+        amod_E  = Qvector((0,0,0,0))    # origin = center of home base tetrahedron
+        amod_C  = b                     # to vertex (C), choose Qvector b
+        amod_D  = (b + c)/two           # to mid-edge D of CC on tetra base 
+        amod_F  = (b + c + d)/three     # to face-center of base F
+        self.assertEqual(qvolume(amod_E, amod_C, amod_D, amod_F), Rational(1,24))
 
 class Test_Koski(unittest.TestCase):
         
