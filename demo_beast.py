@@ -4,6 +4,10 @@
 Created on Wed Apr  3 16:18:26 2024
 
 @author: Kirby Urner
+
+The doodle that got the ball rolling:
+https://www.flickr.com/photos/kirbyurner/53631820894
+
 """
 
 from sympy import N, Rational, sqrt, Eq
@@ -60,6 +64,71 @@ def demo():
     print("Icosa   = ", 20 * (1/sfactor), " = ", N(20 * (1/sfactor)))
     print("Cubocta = ", 20)
     print("SuperRT = ", (120 * E_vol) * φ**3, " = ", N((120 * E_vol) * φ**3))
+    
+def conversion_constants():
+    print("B2E = ", (e.ivm_volume()/b.ivm_volume()).simplify() )
+    print("E2B = ", (b.ivm_volume()/e.ivm_volume()).simplify() )
+    
+    print("E2A = ", (a.ivm_volume()/e.ivm_volume()).simplify() )
+    print("A2E = ", (e.ivm_volume()/a.ivm_volume()).simplify() )
+    
+    print("A2S = ", (s.ivm_volume()/a.ivm_volume()).simplify() )
+    print("S2A = ", (a.ivm_volume()/s.ivm_volume()).simplify() )
+    
+    print("S2T = ", (t.ivm_volume()/s.ivm_volume()).simplify() )
+    print("T2S = ", (s.ivm_volume()/t.ivm_volume()).simplify() )
+    
+    print("T2B = ", (b.ivm_volume()/t.ivm_volume()).simplify() )
+    print("B2T = ", (t.ivm_volume()/b.ivm_volume()).simplify() )
+    
+    print("B2S = ", (s.ivm_volume()/b.ivm_volume()).simplify() )
+    print("S2B = ", (b.ivm_volume()/s.ivm_volume()).simplify() )
+    
+    print("B2A = ", (a.ivm_volume()/b.ivm_volume()).simplify() )
+    print("A2B = ", (b.ivm_volume()/a.ivm_volume()).simplify() )
+    
+    print("E2T = ", (t.ivm_volume()/e.ivm_volume()).simplify() )
+    print("T2E = ", (e.ivm_volume()/t.ivm_volume()).simplify() )
 
+    print("E2S = ", (s.ivm_volume()/e.ivm_volume()).simplify() )
+    print("S2E = ", (e.ivm_volume()/s.ivm_volume()).simplify() )
+    
+    print("A2T = ", (t.ivm_volume()/a.ivm_volume()).simplify() )
+    print("T2A = ", (a.ivm_volume()/t.ivm_volume()).simplify() ) 
+    
+def conversion_values(n=50):
+    
+    print("B2E = ", (e.ivm_volume()/b.ivm_volume()).evalf(n) )
+    print("E2B = ", (b.ivm_volume()/e.ivm_volume()).evalf(n))
+    
+    print("E2A = ", (a.ivm_volume()/e.ivm_volume()).evalf(n) )
+    print("A2E = ", (e.ivm_volume()/a.ivm_volume()).evalf(n) )
+    
+    print("A2S = ", (s.ivm_volume()/a.ivm_volume()).evalf(n) )
+    print("S2A = ", (a.ivm_volume()/s.ivm_volume()).evalf(n) )
+    
+    print("S2T = ", (t.ivm_volume()/s.ivm_volume()).evalf(n) )
+    print("T2S = ", (s.ivm_volume()/t.ivm_volume()).evalf(n) )
+    
+    print("T2B = ", (b.ivm_volume()/t.ivm_volume()).evalf(n) )
+    print("B2T = ", (t.ivm_volume()/b.ivm_volume()).evalf(n) )
+    
+    print("B2S = ", (s.ivm_volume()/b.ivm_volume()).evalf(n) )
+    print("S2B = ", (b.ivm_volume()/s.ivm_volume()).evalf(n) )
+    
+    print("B2A = ", (a.ivm_volume()/b.ivm_volume()).evalf(n) )
+    print("A2B = ", (b.ivm_volume()/a.ivm_volume()).evalf(n) )
+    
+    print("E2T = ", (t.ivm_volume()/e.ivm_volume()).evalf(n) )
+    print("T2E = ", (e.ivm_volume()/t.ivm_volume()).evalf(n) )
+
+    print("E2S = ", (s.ivm_volume()/e.ivm_volume()).evalf(n) )
+    print("S2E = ", (e.ivm_volume()/s.ivm_volume()).evalf(n) )
+    
+    print("A2T = ", (t.ivm_volume()/a.ivm_volume()).evalf(n) )
+    print("T2A = ", (a.ivm_volume()/t.ivm_volume()).evalf(n) ) 
+    
 if __name__ == "__main__":
-    demo()
+    # demo()
+    # conversion_constants()
+    conversion_values()
