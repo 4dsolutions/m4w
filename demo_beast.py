@@ -6,11 +6,12 @@ Created on Wed Apr  3 16:18:26 2024
 @author: Kirby Urner
 """
 
-from sympy import N, Rational, sqrt, Eq, Symbol
+from sympy import N, Rational, sqrt, Eq
 from tetravolume import B,E,A,S,T
 
 φ = (1 + sqrt(5))/2
 𝛕 = 1/φ 
+b,e,a,s,t = B(), E(), A(), S(), T()
 E_vol = sqrt(2) * Rational(1,8) * 𝜏 ** 3
 S_vol = Rational(1,2) * 𝜏 ** 5
 T_vol = A_vol = B_vol = Rational(1,24)
@@ -25,19 +26,21 @@ def demo():
     print("E_vol = ", N(E_vol, 50))  # evaluate
     print("S_vol = ", N(S_vol, 50))  # evaluate
     print()
-    print("Algebraic using CM Volume Formula...")
-    b,e,a,s,t = B(),E(),A(),S(),T()
-
-    print("B volume =", b.ivm_volume()) # keep algebraic
-    print("E volume =", e.ivm_volume()) # keep algebraic
-    print("A volume =", a.ivm_volume()) # keep algebraic
-    print("S volume =", s.ivm_volume()) # keep algebraic
-    print("T volume =", t.ivm_volume()) # keep algebraic
+    print("Algebraic using Volume Formula...")
+    print("B volume =", b.ivm_volume())
+    print("E volume =", e.ivm_volume().simplify())
+    print("A volume =", a.ivm_volume())
+    print("S volume =", s.ivm_volume().simplify())
+    print("T volume =", t.ivm_volume().simplify())
     print()
     
     print("Numeric evaluation...")
-    print("E volume =", e.ivm_volume(True, 50))  # evaluate
-    print("S volume =", s.ivm_volume(True, 50))  # evaluate
+    print("B volume =", b.ivm_volume(True, 50))
+    print("E volume =", e.ivm_volume(True, 50))
+    print("A volume =", a.ivm_volume(True, 50))
+    print("S volume =", s.ivm_volume(True, 50))
+    print("T volume =", t.ivm_volume(True, 50)) 
+    print()
     print()
     print("Testing algebraic equivalence...")
     print("Two E expressions equivalent?: ", Eq(e.ivm_volume(), E_vol))

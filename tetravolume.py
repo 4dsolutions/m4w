@@ -77,8 +77,7 @@ Example resource:
 https://www.omnicalculator.com/math/triangle-angle
 """
 
-import sympy as sp
-from sympy import Rational, Integer, Matrix, acos, deg, N
+from sympy import Rational, Integer, Matrix, acos, deg, N, Eq
 from sympy import sqrt as rt2
 from qrays import Qvector, Vector
 import sys
@@ -88,7 +87,7 @@ import sys
 R = Rational(1,2)
 D = Integer(1)
 
-Syn3  = rt2(sp.Rational(9, 8))
+Syn3  = rt2(Rational(9, 8))
 root2 = rt2(2)
 root3 = rt2(3)
 root5 = rt2(5)
@@ -242,12 +241,12 @@ class Tetrahedron:
         """
         Three options to compute volume from edges...
         GdJ: Gerald de Jong, similar to Euler's, lost his notes, works
-        PdF: Pierro della Francesca, modified by Syn3 (XYZ->IVM constant)
+        PdF: Piero della Francesca, modified by Syn3 (XYZ->IVM constant)
         CM : Caley-Menger, modified by Syn3 (XYZ->IVM constant) 
         """
         
-        #ivmvol = GdJ(self.a, self.b, self.c, self.d, self.e, self.f)
-        #ivmvol = PdF(self.a, self.b, self.c, self.d, self.e, self.f)
+        # ivmvol = GdJ(self.a, self.b, self.c, self.d, self.e, self.f)
+        # ivmvol = PdF(self.a, self.b, self.c, self.d, self.e, self.f)
         ivmvol = CM(self.a, self.b, self.c, self.d, self.e, self.f)
         
         return ivmvol if not value else N(ivmvol, prec)
@@ -413,7 +412,7 @@ class S(Tetrahedron):
 class T(Tetrahedron):
     
     def __init__(self):
-        E2T = (2**sp.Rational(5,6) * 3**sp.Rational(2,3) * PHI / 6).simplify()
+        E2T = (2**Rational(5,6) * 3**Rational(2,3) * PHI / 6).simplify()
         e0 = D/2
         e1 = root3 * PHI**-1 /2
         e2 = rt2((5 - root5)/2)/2
@@ -475,8 +474,8 @@ class Test_Tetrahedron(unittest.TestCase):
 
     def test_E_module(self):
         tet = E()
-        self.assertTrue(sp.Eq(tet.ivm_volume(), 
-                              (root2/8) * (PHI ** -3)))
+        self.assertTrue(Eq(tet.ivm_volume(), 
+                           (root2/8) * (PHI ** -3)))
                         
     def test_A_module(self):
         tet = A()
@@ -484,12 +483,12 @@ class Test_Tetrahedron(unittest.TestCase):
 
     def test_S_module(self):
         tet = S()
-        self.assertTrue(sp.Eq(tet.ivm_volume(), 
+        self.assertTrue(Eq(tet.ivm_volume(), 
                                (PHI ** -5)/2))
 
     def test_T_module(self):
         tet = T()
-        self.assertEqual(tet.ivm_volume(), Rational(1,24), "Volume not 1/24")
+        self.assertTrue(Eq(tet.ivm_volume(), Rational(1,24)), "Volume not 1/24")
                 
     def test_unit_volume2(self):
         tet = Tetrahedron(R, R, R, R, R, R)
@@ -501,7 +500,7 @@ class Test_Tetrahedron(unittest.TestCase):
         
     def test_phi_edge_tetra(self):
         tet = Tetrahedron(D, D, D, D, D, PHI)
-        self.assertEqual(tet.ivm_volume(), root2/2)
+        self.assertTrue(Eq(tet.ivm_volume(), root2/2))
 
     def test_right_tetra(self):
         e = rt2((root3/2)**2 + (root3/2)**2)  # right tetrahedron
@@ -594,7 +593,7 @@ class Test_Tetrahedron(unittest.TestCase):
         q = Vector((1, 0, 0)).rotz(60) * PHI 
         r = Vector((Rational(1,2), root3/6, root6/3)) * 1/PHI
         result = make_tet(p, q, r)
-        self.assertEqual(result.ivm_volume(), D)
+        self.assertTrue(Eq(result.ivm_volume(), D))
         
     def test_phi_tet_2(self):
         two = Integer(2)
@@ -603,13 +602,13 @@ class Test_Tetrahedron(unittest.TestCase):
         q = Qvector((two,one,one,0))
         r = Qvector((two,0,one,one))
         result = make_tet(PHI*q, (1/PHI)*p, r)
-        self.assertEqual(result.ivm_volume(), 1)
+        self.assertTrue(Eq(result.ivm_volume(), 1))
         
     def test_phi_tet_3(self):
         T = Tetrahedron(PHI, 1/PHI, 1, 
                         root2, root2/PHI, root2)
         result = T.ivm_volume()
-        self.assertEqual(result, 1)
+        self.assertTrue(Eq(result, 1))
 
     def test_koski(self):
         a = 1 
@@ -619,7 +618,7 @@ class Test_Tetrahedron(unittest.TestCase):
         e = (root2) * PHI ** -2
         f = (root2) * PHI ** -1       
         tet = Tetrahedron(a,b,c,d,e,f)
-        self.assertTrue(sp.Eq(tet.ivm_volume(), PHI ** -3))   
+        self.assertTrue(Eq(tet.ivm_volume(), PHI ** -3))   
 
     def test_qvolume(self):        
         one = Integer(1)
@@ -643,7 +642,7 @@ class Test_Koski(unittest.TestCase):
         "Tetrahedron =   S6  +    S3 # (volume = 1)"
         S6 = S() * PHI**2
         S3 = S() * PHI
-        self.assertTrue(sp.Eq(S6.ivm_volume() + S3.ivm_volume(), D))
+        self.assertTrue(Eq(S6.ivm_volume() + S3.ivm_volume(), D))
     
     def test_Icosahedron(self):
         "Icosahedron =100*E3 + 20*E  # (volume = ~18.51)"
@@ -656,7 +655,7 @@ class Test_Koski(unittest.TestCase):
         "RhTriac_T   =  5*S6 +  5*S3 # (volume = 5)"
         S6 = S() * PHI**2
         S3 = S() * PHI
-        self.assertTrue(sp.Eq(5*(S6.ivm_volume()) + 5*(S3.ivm_volume()), 5))
+        self.assertTrue(Eq(5*(S6.ivm_volume()) + 5*(S3.ivm_volume()), 5))
         
         
 class Test_Triangle(unittest.TestCase):
@@ -677,7 +676,7 @@ class Test_Triangle(unittest.TestCase):
         v1 = Vector((D, 0, 0))
         v2 = Vector((0, D, 0))
         xyz_area = make_tri(v1, v2)[1]
-        self.assertTrue(sp.Eq(xyz_area, 2))
+        self.assertTrue(Eq(xyz_area, 2))
 
     def test_xyz_area5(self):
         tri = Triangle(R, R, R)
