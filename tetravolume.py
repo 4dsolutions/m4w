@@ -246,8 +246,8 @@ class Tetrahedron:
         """
         
         # ivmvol = GdJ(self.a, self.b, self.c, self.d, self.e, self.f)
-        # ivmvol = PdF(self.a, self.b, self.c, self.d, self.e, self.f)
-        ivmvol = CM(self.a, self.b, self.c, self.d, self.e, self.f)
+        ivmvol = PdF(self.a, self.b, self.c, self.d, self.e, self.f)
+        # ivmvol = CM(self.a, self.b, self.c, self.d, self.e, self.f)
         
         return ivmvol if not value else N(ivmvol, prec)
 

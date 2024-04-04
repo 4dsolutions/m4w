@@ -20,15 +20,16 @@ E_vol = sqrt(2) * Rational(1,8) * 𝜏 ** 3
 S_vol = Rational(1,2) * 𝜏 ** 5
 T_vol = A_vol = B_vol = Rational(1,24)
 sfactor = (S_vol/E_vol).simplify()
+Syn3 = sqrt(Rational(9,8))
     
-def demo():
+def ivm_vols(n=50):
     print("Algebraic using φ...")
     print("E_vol = ", E_vol) # keep algebraic
     print("S_vol = ", S_vol) # keep algebraic
     print()
     print("Numeric evaluation...")
-    print("E_vol = ", N(E_vol, 50))  # evaluate
-    print("S_vol = ", N(S_vol, 50))  # evaluate
+    print("E_vol = ", N(E_vol, n))  # evaluate
+    print("S_vol = ", N(S_vol, n))  # evaluate
     print()
     print("Algebraic using Volume Formula...")
     print("B volume =", b.ivm_volume())
@@ -39,11 +40,11 @@ def demo():
     print()
     
     print("Numeric evaluation...")
-    print("B volume =", b.ivm_volume(True, 50))
-    print("E volume =", e.ivm_volume(True, 50))
-    print("A volume =", a.ivm_volume(True, 50))
-    print("S volume =", s.ivm_volume(True, 50))
-    print("T volume =", t.ivm_volume(True, 50)) 
+    print("B volume =", b.ivm_volume(True, n))
+    print("E volume =", e.ivm_volume(True, n))
+    print("A volume =", a.ivm_volume(True, n))
+    print("S volume =", s.ivm_volume(True, n))
+    print("T volume =", t.ivm_volume(True, n)) 
     print()
     print()
     print("Testing algebraic equivalence...")
@@ -64,6 +65,35 @@ def demo():
     print("Icosa   = ", 20 * (1/sfactor), " = ", N(20 * (1/sfactor)))
     print("Cubocta = ", 20)
     print("SuperRT = ", (120 * E_vol) * φ**3, " = ", N((120 * E_vol) * φ**3))
+
+def xyz_vols(n=50):
+    print("Algebraic using φ...")
+    print("E_vol = ", E_vol * 1/Syn3) # keep algebraic
+    print("S_vol = ", S_vol * 1/Syn3) # keep algebraic
+    print()
+    print("Numeric evaluation...")
+    print("E_vol = ", N(E_vol * 1/Syn3, n))  # evaluate
+    print("S_vol = ", N(S_vol * 1/Syn3, n))  # evaluate
+    print()
+    print("Algebraic using Volume Formula...")
+    print("B volume =", b.xyz_volume().simplify())
+    print("E volume =", e.xyz_volume().simplify())
+    print("A volume =", a.xyz_volume().simplify())
+    print("S volume =", s.xyz_volume().simplify())
+    print("T volume =", t.xyz_volume().simplify())
+    print()
+    
+    print("Numeric evaluation...")
+    print("B volume =", b.xyz_volume(True, n))
+    print("E volume =", e.xyz_volume(True, n))
+    print("A volume =", a.xyz_volume(True, n))
+    print("S volume =", s.xyz_volume(True, n))
+    print("T volume =", t.xyz_volume(True, n)) 
+    print()
+    print()
+    print("Testing algebraic equivalence...")
+    print("Two E expressions equivalent?: ", Eq(e.ivm_volume(), E_vol))
+    print("Two S expressions equivalent?: ", Eq(s.ivm_volume(), S_vol))
     
 def conversion_constants():
     print("B2E = ", (e.ivm_volume()/b.ivm_volume()).simplify() )
@@ -129,6 +159,7 @@ def conversion_values(n=50):
     print("T2A = ", (a.ivm_volume()/t.ivm_volume()).evalf(n) ) 
     
 if __name__ == "__main__":
-    # demo()
+    # ivm_vols(n=20)
+    xyz_vols(n=20)
     # conversion_constants()
-    conversion_values()
+    # conversion_values()
