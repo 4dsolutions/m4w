@@ -169,7 +169,7 @@ class Tetrahedron:
         
     __rmul__ = __mul__
         
-    def edges(self):
+    def edges(self, values=False, prec=15):
         """
             a: AB
             b: AC
@@ -178,14 +178,24 @@ class Tetrahedron:
             e: CD
             f: BD 
         """
-        return {
-            "AB": self.a,
-            "AC": self.b,
-            "AD": self.c,
-            "BC": self.d,
-            "DC": self.e,
-            "BD": self.f,
-            }
+        if values:
+            return {
+                "AB": N(self.a, prec),
+                "AC": N(self.b, prec),
+                "AD": N(self.c, prec),
+                "BC": N(self.d, prec),
+                "CD": N(self.e, prec),
+                "BD": N(self.f, prec),
+                }
+        else:
+            return {
+                "AB": self.a,
+                "AC": self.b,
+                "AD": self.c,
+                "BC": self.d,
+                "CD": self.e,
+                "BD": self.f,
+                }            
         
     def angles(self, values=False, prec=15):
         """
@@ -209,7 +219,7 @@ class Tetrahedron:
                 "BCD": N(self.BCD, prec),
                 "ADC": N(self.ADC, prec),
                 "BDC": N(self.BDC, prec),
-                "ADB": N(self.ADB, prec)
+                "ADB": N(self.ADB, prec),
                 }            
         else:
             return {
