@@ -360,6 +360,19 @@ class B(Tetrahedron):
         bmod_AC = Rational(1,2)
         super().__init__(bmod_EA, bmod_EB, bmod_EC, bmod_AB, bmod_BC, bmod_AC)
         
+    def fig916_01(self, value = False, prec = 15):
+        a = Integer(1)
+        figdata = {
+            "EB" : a * root6/12,
+            "EA" : a * root2/2,
+            "EC" : a/2,
+            "BC" : a * root2/4,
+            "AC" : a/2,
+            "AB" : a * root6/4,}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
         
 class E(Tetrahedron):
     
@@ -371,6 +384,20 @@ class E(Tetrahedron):
         e4 = rt2(5 - 2*root5)/2
         e5 = 1/PHI/2        
         super().__init__(e0, e1, e2, e3, e4, e5)
+        
+    def fig986_411(self, value = False, prec = 15):
+        h = Rational(1,2) 
+        figdata = {
+            "CA" : (h/2) * (3 - root5),
+            "CB" : (h/2) * (root5 - 1),
+            "CO" : h,
+            "AB" : h * rt2(5 - 2 * root5),
+            "AO" : h * rt2((5 - root5)/2),
+            "BO" : h * rt2((9 - 3 * root5)/2),}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
 
 class A(Tetrahedron):
     """
@@ -407,6 +434,21 @@ class A(Tetrahedron):
                                             amod_CF, amod_CD, amod_DF)]
         
         super().__init__(a,b,c,d,e,f) 
+        
+    def fig913_01(self, value = False, prec = 15):
+        a = Integer(1)
+        figdata = {
+            "CD" : (a/2),
+            "CE" : a * root6/4,
+            "CF" : a * root3/3,
+            "DF" : a * root3/6,
+            "FE" : a * root6/12,
+            "DE" : a * root2/4,}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
+        
 
 class S(Tetrahedron):
     
@@ -417,12 +459,27 @@ class S(Tetrahedron):
         e3 = (3 - root5)/2
         e4 = e1/2
         e5 = e4
-        super().__init__(e0, e1, e2, e3, e4, e5)    
+        super().__init__(e0, e1, e2, e3, e4, e5)   
+
+    def fig988_13(self, value = False, prec = 15):
+        a = Integer(1)
+        figdata = {
+            "GH" : (a/2) * rt2(7 - 3*root5),
+            "EG" : (a/2) * rt2(7 - 3*root5),
+            "EH" : (a/2) * (3 - root5),
+            "FG" : (a/2) * root3 * rt2(7 - 3*root5),
+            "FE" : a * rt2(7 - 3*root5),
+            "FH" : (a/2) * (root5 - 1),}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
         
 class T(Tetrahedron):
     
     def __init__(self):
-        E2T = (2**Rational(5,6) * 3**Rational(2,3) * PHI / 6).simplify()
+        E2T = (Rational(1,24) / E().ivm_volume()).simplify()
+        h = E2T ** Rational(1,3)
         e0 = D/2
         e1 = root3 * PHI**-1 /2
         e2 = rt2((5 - root5)/2)/2
@@ -430,15 +487,30 @@ class T(Tetrahedron):
         e4 = rt2(5 - 2*root5)/2
         e5 = 1/PHI/2  
         
-        e0 *= E2T
-        e1 *= E2T
-        e2 *= E2T
-        e3 *= E2T
-        e4 *= E2T
-        e5 *= E2T
+        e0 *= h
+        e1 *= h
+        e2 *= h
+        e3 *= h
+        e4 *= h
+        e5 *= h
  
         super().__init__(e0, e1, e2, e3, e4, e5)        
 
+    def fig986_411(self, value = False, prec = 15):
+        E2T = (Rational(1,24) / E().ivm_volume()).simplify()
+        h = (E2T ** Rational(1,3))/2       
+        figdata = {
+            "CA" : (h/2) * (3 - root5),
+            "CB" : (h/2) * (root5 - 1),
+            "CO" : h,
+            "AB" : h * rt2(5 - 2 * root5),
+            "AO" : h * rt2((5 - root5)/2),
+            "BO" : h * rt2((9 - 3 * root5)/2),}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
+        
 
 # ============[ TRIANGLE CLASS ]===================
 
