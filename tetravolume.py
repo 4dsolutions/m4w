@@ -95,11 +95,11 @@ root6 = rt2(6)
 
 PHI = (1 + root5)/2
 
-Smod = (PHI **-5)/2  
-Emod = (root2/8) * (PHI ** -3)
-Amod = Bmod = Tmod = Rational(1,24)
+Svol = (PHI **-5)/2  
+Evol = (root2/8) * (PHI ** -3)
+Avol = Bvol = Tvol = Rational(1,24)
 
-sfactor = Smod/Emod
+sfactor = Svol/Evol
 
 # ============[ TETRAHEDRON CLASS ]=================== 
 
@@ -352,27 +352,49 @@ class B(Tetrahedron):
     """
     
     def __init__(self):
-        bmod_EA = rt2(2)/2
-        bmod_EB = rt2(6)/12
-        bmod_EC = Rational(1,2)
-        bmod_AB = rt2(6)/4
-        bmod_BC = rt2(2)/4
-        bmod_AC = Rational(1,2)
-        super().__init__(bmod_EA, bmod_EB, bmod_EC, bmod_AB, bmod_BC, bmod_AC)
+        a = D
+        BA = a * root2/2
+        BE = a * root6/4
+        BG = a/2
+        AE = a * root6/12
+        EG = a * root2/4
+        AG = a/2
+        super().__init__(BA, BE, BG, AE, EG, AG)
         
-    def fig916_01(self, value = False, prec = 15):
-        a = Integer(1)
+    def fig986_421(self, value = False, prec = 15):
+        """
+        http://rwgrayprojects.com/synergetics/s09/figs/f86421.html
+        """
+        a = D
         figdata = {
-            "EB" : a * root6/12,
-            "EA" : a * root2/2,
-            "EC" : a/2,
-            "BC" : a * root2/4,
-            "AC" : a/2,
-            "AB" : a * root6/4,}
+            "BA" : a * root2/2,
+            "BE" : a * root6/4,
+            "BG" : a/2,
+            "AE" : a * root6/12,
+            "EG" : a * root2/4,
+            "AG" : a/2,}
         if value:
             return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
         else:
             return figdata
+        
+    def fig916_01(self, value = False, prec = 15):
+        """
+        http://rwgrayprojects.com/synergetics/s09/figs/f1601.html
+        """
+        a = D
+        figdata = {
+            "AB" : a * root6/4,
+            "AC" : a/2,
+            "AE" : a * root2/2,
+            "BC" : a * root2/4,
+            "CE" : a/2,
+            "BE" : a * root6/12}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
+        
         
 class E(Tetrahedron):
     
@@ -435,20 +457,39 @@ class A(Tetrahedron):
         
         super().__init__(a,b,c,d,e,f) 
         
-    def fig913_01(self, value = False, prec = 15):
+    def fig986_421(self, value = False, prec = 15):
+        """
+        http://rwgrayprojects.com/synergetics/s09/figs/f86421.html
+        """
         a = Integer(1)
         figdata = {
-            "CD" : (a/2),
+            "BF" : a * root3/3,
+            "BE" : a * root6/4,
+            "BG" : a/2,
+            "EF" : a * root6/12,
+            "EG" : a * root2/4,
+            "FG" : a * root3/6,}
+        if value:
+            return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
+        else:
+            return figdata
+
+    def fig913_01(self, value = False, prec = 15):
+        """
+        http://rwgrayprojects.com/synergetics/s09/figs/f1301.html
+        """
+        a = Integer(1)
+        figdata = {
             "CE" : a * root6/4,
             "CF" : a * root3/3,
+            "CD" : a/2,
+            "EF" : a * root6/12,
             "DF" : a * root3/6,
-            "FE" : a * root6/12,
             "DE" : a * root2/4,}
         if value:
             return { edge: N(expr, prec) for (edge, expr) in figdata.items() }
         else:
             return figdata
-        
 
 class S(Tetrahedron):
     
