@@ -219,7 +219,7 @@ class Qvector(Vector):
     """Quadray vector"""
 
     def __init__(self, arg):
-        """Initialize a vector at an (x,y,z)"""
+        """Initialize a vector at an (a, b, c, d)"""
         self.coords = self.norm(arg)
 
     def __repr__(self):
