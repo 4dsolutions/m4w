@@ -107,7 +107,7 @@ class Tetrahedron:
     """
     Takes six edges of tetrahedron with faces
     (a,b,d)(b,c,e)(c,a,f)(d,e,f) -- returns volume
-    in ivm tvs and xyz cubic units, S3 ratio.
+    in ivm tvs and xyz cubic units, Syn3 ratio.
     
         Apex A goes to base B, C, D, creating edges:
             a: AB
