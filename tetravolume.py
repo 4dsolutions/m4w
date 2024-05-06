@@ -2,6 +2,7 @@
 tetravolume.py
 Kirby Urner (c) MIT License
 
+May    6, 2024: dihedral angles
 April  1, 2024: wire up all three volume-from-edges algorithms as options 
 April  1, 2024: add A, B subclasses of Tetrahedron, completing BEAST set
 
@@ -77,7 +78,7 @@ Example resource:
 https://www.omnicalculator.com/math/triangle-angle
 """
 
-from sympy import Rational, Integer, Matrix, acos, deg, N, Eq
+from sympy import Rational, Integer, Matrix, acos, cos, sin, deg, N, Eq
 from sympy import sqrt as rt2
 from qrays import Qvector, Vector
 import sys
@@ -134,7 +135,7 @@ class Tetrahedron:
         self.AD = c
         self.BC = d
         self.CD = e
-        self.DB = f
+        self.BD = f
         
         # 3-letter face angles
         a2,b2,c2,d2,e2,f2 = self.a2, self.b2, self.c2, self.d2, self.e2, self.f2
@@ -154,7 +155,67 @@ class Tetrahedron:
         self.ADC = acos( (c2 + e2 - b2)/(2 * c * e) ) 
         self.BDC = acos( (e2 + f2 - d2)/(2 * e * f) ) 
         self.ADB = acos( (c2 + f2 - a2)/(2 * c * f) )
-
+        
+    def dihedral(self, edge):
+        if   edge == 'AB': 
+            r = (cos(self.CBD) - cos(self.ABD) * cos(self.ABC))/(sin(self.ABD) * sin(self.ABC))
+        elif edge == 'AC': 
+            r = (cos(self.BCD) - cos(self.ACD) * cos(self.ACB))/(sin(self.ACD) * sin(self.ACB))
+        elif edge == 'AD': 
+            r = (cos(self.BDC) - cos(self.ADB) * cos(self.ADC))/(sin(self.ADB) * sin(self.ADC))
+        elif edge == 'BC': 
+            r = (cos(self.ACD) - cos(self.BCD) * cos(self.ACB))/(sin(self.BCD) * sin(self.ACB))
+        elif edge == 'CD': 
+            r = (cos(self.ADB) - cos(self.ADC) * cos(self.BDC))/(sin(self.ADC) * sin(self.BDC))
+        elif edge == 'BD': 
+            r = (cos(self.ADC) - cos(self.BDC) * cos(self.ADB))/(sin(self.BDC) * sin(self.ADB))
+        return acos(r)
+    
+    def dihedrals(self, values=False, degrees=False, prec=15):
+        """
+            a: AB
+            b: AC
+            c: AD
+            d: BC
+            e: CD
+            f: BD 
+        """
+        if values:
+            the_dict = {
+                "AB": N(self.dihedral('AB'), prec),
+                "AC": N(self.dihedral('AC'), prec),
+                "AD": N(self.dihedral('AD'), prec),
+                "BC": N(self.dihedral('BC'), prec),
+                "CD": N(self.dihedral('CD'), prec),
+                "BD": N(self.dihedral('BD'), prec),
+                }
+        else:
+            the_dict = {
+                "AB": self.dihedral('AB'),
+                "AC": self.dihedral('AC'),
+                "AD": self.dihedral('AD'),
+                "BC": self.dihedral('BC'),
+                "CD": self.dihedral('CD'),
+                "BD": self.dihedral('BD'),
+                }    
+        
+        if degrees:
+        
+            output = {}  # empty dict
+            
+            if values:
+                for k,v in the_dict.items():
+                    output[k] = N(deg(v), prec) 
+            else:
+                for k,v in the_dict.items():
+                    output[k] = deg(v)
+        
+        else:
+            
+            output = the_dict  # radians or expressions
+                
+        return output
+        
     def dump(self):
         return self.a2, self.b2, self.c2
     
