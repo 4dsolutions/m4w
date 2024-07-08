@@ -370,12 +370,34 @@ def ivm_basis():
     d = Qvector((zero, zero, zero, one))
     return a, b, c, d
 
+def xyz_basis():
+    x = Vector((one, zero, zero))
+    y = Vector((zero, one, zero))
+    z = Vector((zero, zero, one))
+    return x, y, z
+
 def test1():
     a, b, c, d = ivm_basis() # unpacking assignment
     print("Qvector length (symbolic ) :", a.length())
     print("Qvector length (evaluated):" , a.length().evalf(50))
     print("Vector length  (symbolic ) :", a.xyz.length())
     print("Vector length  (evaluated) :", a.xyz.length().evalf(50))
+
+def test2():
+    b0, b1, b2, b3 = ivm_basis() # unpacking assignment
+    print("IVM -> XYZ")
+    print("{:32}{:56}{}".format("IVM", "XYZ", "Length"))
+    for v in b0, b1, b2, b3:
+        xyz = v.xyz
+        print("{}\t{}\t{}".format(v, xyz, xyz.length()))
+
+def test3():
+    x, y, z = xyz_basis() # unpacking assignment
+    print("XYZ -> IVM")
+    print("{:32}{:48}{}".format("XYZ", "IVM", "Length"))
+    for v in x, y, z:
+        q = v.quadray()
+        print("{}\t{}\t{}".format(v, q, q.length()))
     
 if __name__ == "__main__":
     test1()
