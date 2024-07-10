@@ -804,11 +804,15 @@ class Test_Tetrahedron(unittest.TestCase):
         tet = Tetrahedron(a,b,c,d,e,f)
         self.assertTrue(Eq(tet.ivm_volume(), PHI ** -3))   
 
-    def test_qvolume(self):        
+    def test_qvolume_Amod(self):    
+        """
+        A module
+        http://rwgrayprojects.com/synergetics/s09/figs/f1301.html
+        """
         one = Integer(1)
         two = Integer(2)
         three = Integer(3)
-        # a = Qvector((one,0,0,0))
+        a = Qvector((one,0,0,0))
         b = Qvector((0,one,0,0))
         c = Qvector((0,0,one,0))
         d = Qvector((0,0,0,one))
@@ -816,9 +820,29 @@ class Test_Tetrahedron(unittest.TestCase):
         # vertexes of the A module as Qvectors
         amod_E  = Qvector((0,0,0,0))    # origin = center of home base tetrahedron
         amod_C  = b                     # to vertex (C), choose Qvector b
-        amod_D  = (b + c)/two           # to mid-edge D of CC on tetra base 
+        amod_D  = (b + c)/two           # to mid-edge D on C-C on tetra base 
         amod_F  = (b + c + d)/three     # to face-center of base F
         self.assertEqual(qvolume(amod_E, amod_C, amod_D, amod_F), Rational(1,24))
+
+    def test_qvolume_Bmod(self):    
+        """
+        B module
+        http://rwgrayprojects.com/synergetics/s09/figs/f1601.html
+        """
+        one = Integer(1)
+        two = Integer(2)
+        three = Integer(3)
+        a = Qvector((one,0,0,0))
+        b = Qvector((0,one,0,0))
+        c = Qvector((0,0,one,0))
+        d = Qvector((0,0,0,one))
+        
+        # vertexes of the B module as Qvectors
+        amod_B  = Qvector((0,0,0,0))    # origin = center of home base tetrahedron
+        amod_A  = b                     # to vertex (A), choose Qvector b
+        amod_C  = (b + c)/two           # to mid-edge C of A-A on tetra base 
+        amod_E  = -(b + c + d)/three    # to top of B mod half way up the altitude
+        self.assertEqual(qvolume(amod_B, amod_A, amod_C, amod_E), Rational(1,24))
 
 class Test_Koski(unittest.TestCase):
         
