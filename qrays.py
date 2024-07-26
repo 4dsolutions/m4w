@@ -2,6 +2,20 @@
 """
 Created on Sat Jun  4 09:07:22 2016
 
+Notes:
+
+Jul 26, 2024: This version was about stripping out
+anything that might keep the computation objects 
+algebraic (symbolic) versus allowing them to decay
+into numerics. Some cool Qvector methods were
+sacrificed towards this end, but not in all versions.
+
+In some versions of Qvector, we have some elegant
+4x4 rotation matrix coupled with norm0 operations
+per the Tom Ace website.
+
+https://minortriad.com/quadray.html
+
 For more background on Quadrays in the M4W context,
 see: 
 
