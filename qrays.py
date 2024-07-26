@@ -16,6 +16,10 @@ per the Tom Ace website.
 
 https://minortriad.com/quadray.html
 
+My current workaround is a hack in that I allow 
+the Qvector parent class, Vector, to handle rotation 
+using conventional XYZ methods.  Not optimum.
+
 For more background on Quadrays in the M4W context,
 see: 
 
