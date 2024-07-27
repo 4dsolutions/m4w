@@ -6,9 +6,10 @@ Notes:
 
 Jul 26, 2024: This version was about stripping out
 anything that might keep the computation objects 
-algebraic (symbolic) versus allowing them to decay
-into numerics. Some cool Qvector methods were
-sacrificed towards this end, but not in all versions.
+from staying algebraic (symbolic) versus allowing 
+them to decay into numerics. Some cool Qvector 
+methods were sacrificed towards this end, but not 
+in all versions.
 
 In some versions of Qvector, we have some elegant
 4x4 rotation matrix coupled with norm0 operations
