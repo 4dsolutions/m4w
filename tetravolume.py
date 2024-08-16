@@ -498,20 +498,20 @@ class A(Tetrahedron):
         d = Qvector((0,0,0,one))
         
         # vertexes
-        # amod_E  = Qvector((0,0,0,0))  # origin = center of home base tetrahedron
-        amod_C  = b                     # to vertex (C), choose Qvector b
-        amod_D  = (b + c)/two           # to mid-edge D of CC on tetra base 
-        amod_F  = (b + c + d)/three     # to face-center of base F
+        self.amod_E  = Qvector((0,0,0,0))  # origin = center of home base tetrahedron
+        self.amod_C  = b                     # to vertex (C), choose Qvector b
+        self.amod_D  = (b + c)/two           # to mid-edge D of CC on tetra base 
+        self.amod_F  = (b + c + d)/three     # to face-center of base F
         
         # apex E to base F, C, D
-        amod_EF = amod_F
+        amod_EF = self.amod_F
         amod_CE = b
-        amod_DE = amod_D
+        amod_DE = self.amod_D
         
         # around the base, C, D, E
-        amod_CF = amod_C - amod_F
-        amod_CD = amod_C - amod_D
-        amod_DF = amod_D - amod_F
+        amod_CF = self.amod_C - self.amod_F
+        amod_CD = self.amod_C - self.amod_D
+        amod_DF = self.amod_D - self.amod_F
         
         a,b,c,d,e,f = [v.length() for v in (amod_EF, amod_CE, amod_DE, 
                                             amod_CF, amod_CD, amod_DF)]
