@@ -37,6 +37,7 @@ and triangles for IVM units of volume and area.  See
 the docstring for more details.
 
 @author:  K. Urner, 4D Solutions, (M) MIT License
+ Sep  4, 2024: simplify Qvector <-> Vector conversion algs
  Mar 10, 2024: the m4w.qrays.py fork aims to stay sympy friendly
  Mar  5, 2024: continuing to remove any fixed-precision limitations
  Nov 15, 2023: customized for use with sympy, mpmath in m4w repo (incomplete)
@@ -223,7 +224,7 @@ class Vector:
         
         return (r, phi, theta)
 
-    def quadray(self):
+    def quadray_old(self):
         """return (a, b, c, d) quadray based on current (x, y, z)"""
         x, y, z = self.xyz
         k = 2/root2
@@ -233,7 +234,13 @@ class Vector:
         d = k * (int(bool(x >= 0)) * ( x) + int(bool(y <  0)) * (-y) + int(bool(z <  0)) * (-z))
         return Qvector((a, b, c, d))
 
-        
+    def quadray(self):
+        """linear combo of self.xyz and xyz spokes as Qvectors""" 
+        return (self.x * Qvector((root2, 0, 0, root2)) + 
+                self.y * Qvector((root2, 0, root2, 0)) + 
+                self.z * Qvector((root2, root2, 0, 0)))
+
+
 class Qvector(Vector):
     """Quadray vector"""
 
@@ -342,13 +349,22 @@ class Qvector(Vector):
         return self.xyz.angle(v1.xyz)
         
     @property
-    def xyz(self):
+    def xyz_old(self):
         a,b,c,d     =  self.coords
         k           =  1/(2 * root2)
         xyz         = (k * (a - b - c + d),
                        k * (a - b + c - d),
                        k * (a + b - c - d))
         return Vector(xyz)
+
+    @property
+    def xyz(self):
+        "linear combo of self.coords * basis qrays in xyz"
+        return (self.a * Vector(( root2/4,  root2/4,  root2/4)) + 
+                self.b * Vector((-root2/4, -root2/4,  root2/4)) + 
+                self.c * Vector((-root2/4,  root2/4, -root2/4)) + 
+                self.d * Vector(( root2/4, -root2/4, -root2/4)))
+
         
 class Svector(Vector):
     """Subclass of Vector that takes spherical coordinate args."""

@@ -756,7 +756,7 @@ class Test_Tetrahedron(unittest.TestCase):
     def test_area_martian3(self):
         qx = Vector((D,0,0)).quadray()
         qy = Vector((R,rt2(3)/2,0)).quadray()
-        result = qx.area(qy)
+        result = qx.area(qy).simplify() # sep 4 2024
         self.assertEqual(result, D)
         
     def test_area_earthling1(self):
