@@ -12,6 +12,14 @@ These functions purport to provide the following functionality:
 
 Analysis:
 https://coda.io/d/Math4Wisdom_d0SvdI3KSto/Synergetics-Language-Code-Models_suW8a#_luU8e
+
+Sept 4, 2024:
+
+Looking back, using AI to make quadrays code more perspicacious was 
+in lieu of making the original codebase more intuitive.  Rewritten
+xyz <-> abcd conversion algorithms clear up a lot of the confusions.
+I recommend not doing anything with the code below. The original 
+codebase (qrays.py) is what to use from this repo.
 """
 
 from math import sqrt
