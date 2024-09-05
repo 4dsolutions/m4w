@@ -226,7 +226,7 @@ class Vector:
 
     def quadray(self):
         """
-        Return self as a quadray Vector (Vector -> Qector)
+        Return self as a quadray Vector (Vector -> Qvector)
         A linear combo of self.xyz and the xyz basis spokes as Qvectors
 
         Negative coefficients will create oppositely pointing Qvectors
@@ -350,7 +350,7 @@ class Qvector(Vector):
         A linear combo of self.coords * the four basis qrays 
         as xyz equivalents
 
-        Note: slightly asymmetrical with Vector where v.quaday is
+        Note: slightly asymmetrical with Vector where v.quadray() is
         a method not an attribute i.e. method disguised with @property
         """
         return (self.a * Vector(( root2/4,  root2/4,  root2/4)) + 
