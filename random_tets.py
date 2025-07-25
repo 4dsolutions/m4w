@@ -36,7 +36,12 @@ def gen_tet(n):
         ball1 += choice(ivms)
         ball2 += choice(ivms)
         ball3 += choice(ivms)
-        
+    
+    print(ball0)
+    print(ball1)
+    print(ball2)
+    print(ball3)
+    
     a = (ball0 - ball1).length()
     b = (ball0 - ball2).length()
     c = (ball0 - ball3).length()
