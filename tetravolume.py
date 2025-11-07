@@ -88,11 +88,12 @@ import sys
 R = Rational(1,2)
 D = Integer(1)
 
-Syn3  = rt2(Rational(9, 8))
-root2 = rt2(2)
-root3 = rt2(3)
-root5 = rt2(5)
-root6 = rt2(6)
+Syn3   = rt2(Rational(9, 8))
+root2  = rt2(2)
+root3  = rt2(3)
+root5  = rt2(5)
+root6  = rt2(6)
+root10 = rt2(10)
 
 PHI = (1 + root5)/2
 
@@ -100,7 +101,7 @@ Svol = (PHI **-5)/2
 Evol = (root2/8) * (PHI ** -3)
 Avol = Bvol = Tvol = Rational(1,24)
 
-sfactor = Svol/Evol
+sfactor = Svol/Evol  # = (2*root2 / PHI**2) = (3*root2 - root10)
 
 # ============[ TETRAHEDRON CLASS ]=================== 
 
@@ -498,7 +499,7 @@ class A(Tetrahedron):
         d = Qvector((0,0,0,one))
         
         # vertexes
-        self.amod_E  = Qvector((0,0,0,0))  # origin = center of home base tetrahedron
+        self.amod_E  = Qvector((0,0,0,0))    # origin = center of home base tetrahedron
         self.amod_C  = b                     # to vertex (C), choose Qvector b
         self.amod_D  = (b + c)/two           # to mid-edge D of CC on tetra base 
         self.amod_F  = (b + c + d)/three     # to face-center of base F
